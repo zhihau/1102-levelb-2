@@ -49,8 +49,8 @@
                     if(parseInt(chk)==1){//有時可以有時不行
                         alert("帳號重複");
                     }else{
-                        delete from.pw2;
-                        // console.log(form)
+                        delete form.pw2;
+                         console.log(form)
                         $.post("api/reg.php",form,(res)=>{
                             // console.log(res);//沒回覆信息相當於零
                             // if(parseInt(res)==1){
