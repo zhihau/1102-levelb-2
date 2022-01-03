@@ -29,7 +29,7 @@ class DB{
         }else{
             $sql .= " `id`='$id'";
         }
-echo $sql;
+// echo $sql;
         return $this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
     }
     public function all(...$arg){
@@ -139,9 +139,9 @@ $Log=new DB("log");
 */
 
 if(!isset($_SESSION['view'])){
-    echo "xxx";
+    // echo "xxx";
     if($View->math('count','*',['date'=>date("Y-m-d")])>0){
-        echo "aaa";
+        // echo "aaa";
         $view=$View->find(['date'=>date("Y-m-d")]);
         $view['total']++;
         // $view['total']+=1;
@@ -149,12 +149,12 @@ if(!isset($_SESSION['view'])){
         $View->save($view);
         $_SESSION['view']=$view['total'];
     }else{
-        echo "bbb";
+        // echo "bbb";
         $View->save(['date'=>date("Y-m-d"),'total'=>1]);
         $_SESSION['view']=1;
     }
 }else{
-    echo "yyy";
+    // echo "yyy";
 }
 
 ?>
