@@ -31,20 +31,23 @@
             acc:$("#acc").val(),
             pw:$("#pw").val()
         }
-        $.post("api/chk_acc.php",{acc:user.acc},()=>{
+        $.post("api/chk_acc.php",{acc:user.acc},(chk)=>{
             if(parseInt(chk)==0){
                 alert("查無帳號")
             }else{
                 $.post("api/chk_pw.php",user,(chk)=>{
-                    if(chk==0){
+                    if(parseInt(chk)==0){
                         alert("密碼錯誤")
                     }else{//帳密都正確
-if(user.acc=="admin"){
-    location.href='back.php';
+                        alert("密碼正確")
+                        console.log(user.acc);
 
-}else{
-    location.href='index.php';
-}
+                        if(user.acc=="admin"){
+                            location.href='back.php';
+
+                        }else{
+                            location.href='index.php';
+                        }
                     }
                 })
             }
