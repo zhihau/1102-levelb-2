@@ -103,7 +103,7 @@ echo $sql;
                                      VALUES('".implode("','",$array)."')";
         }
 
-        return $this->pdo->exec($sql);
+        return $this->pdo->exec($sql);//影響的筆數
     }
 
     public function del($id){
