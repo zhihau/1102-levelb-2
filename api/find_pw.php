@@ -1,12 +1,10 @@
-<?php include_once "../base.php";
+<?php
+include_once "../base.php";
 
-$email=$_POST['email'];
-$user=$User->find(['email'=>$email]);
-if(empty ($user)){
-    echo "查無此資料";
+// dd($_POST);
+$res=$User->find($_POST);
+if($res){
+echo "您的密碼為：".$res['pw'];
 }else{
-    echo "您的密碼為:".$user['pw'];
+echo "查無此資料";
 }
-
-
-?>

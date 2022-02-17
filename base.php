@@ -8,15 +8,14 @@ class DB{
     protected $pw='';
     protected $pdo;
     public $table;
-    // 希望建構式裡面的程式碼盡量精簡
-    public function __construct($table)
-    {
+
+    public function __construct($table){
         $this->table=$table;
         $this->pdo=new PDO($this->dsn,$this->user,$this->pw);
-        
+      
     }
 
-    
+
     public function find($id){
         $sql="SELECT * FROM $this->table WHERE ";
 
@@ -29,7 +28,7 @@ class DB{
         }else{
             $sql .= " `id`='$id'";
         }
-// echo $sql;
+
         return $this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
     }
     public function all(...$arg){
@@ -41,17 +40,18 @@ class DB{
                     $tmp[]="`$key`='$value'";
                 }
 
-                $sql .=" WHERE ".implode(" AND ".$arg[0])." ".$arg[1];
+                $sql .=" WHERE ".implode(" AND ",$tmp)." ".$arg[1];
 
             break;
             case 1:
                 if(is_array($arg[0])){
+                    
                     foreach($arg[0] as $key => $value){
                         $tmp[]="`$key`='$value'";
                     }
-                    $sql .= " WHERE ".implode(" AND ",$arg[0]);
+                    $sql .= " WHERE ".implode(" AND ",$tmp);
                 }else{
-                    $sql .= $arg[1];
+                    $sql .= $arg[0];
                     
                 }
             break;
@@ -68,7 +68,7 @@ class DB{
                     $tmp[]="`$key`='$value'";
                 }
 
-                $sql .=" WHERE ".implode(" AND ".$arg[0])." ".$arg[1];
+                $sql .=" WHERE ".implode(" AND ",$arg[0])." ".$arg[1];
 
             break;
             case 1:
@@ -76,15 +76,15 @@ class DB{
                     foreach($arg[0] as $key => $value){
                         $tmp[]="`$key`='$value'";
                     }
-                    $sql .= " WHERE ".implode(" AND ",$arg[0]);
+                    $sql .= " WHERE ".implode(" AND ",$tmp);
                 }else{
-                    $sql .= $arg[1];
+                    $sql .= $arg[0];
                     
                 }
             break;
         }
 
-
+// echo $sql;
         return $this->pdo->query($sql)->fetchColumn();
     }
     public function save($array){
@@ -103,7 +103,8 @@ class DB{
                                      VALUES('".implode("','",$array)."')";
         }
 
-        return $this->pdo->exec($sql);//影響的筆數
+       // echo $sql;
+        return $this->pdo->exec($sql);
     }
 
     public function del($id){
@@ -125,36 +126,46 @@ class DB{
         return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 
-}
-$User=new DB("user");
-$News=new DB("news");
-$View=new DB("view");
-$Que=new DB("que");
-$Log=new DB("log");
 
-/*
-* 先找到有沒有今日的瀏覽人數紀錄
-*   * 有->瀏覽人次加1
-*   * 沒有->增加今日的新紀錄，瀏覽人次為1
-*/
-
-if(!isset($_SESSION['view'])){
-    // echo "xxx";
-    if($View->math('count','*',['date'=>date("Y-m-d")])>0){
-        // echo "aaa";
-        $view=$View->find(['date'=>date("Y-m-d")]);
-        $view['total']++;
-        // $view['total']+=1;
-        // $view['total']=$view['total']+1;
-        $View->save($view);
-        $_SESSION['view']=$view['total'];
-    }else{
-        // echo "bbb";
-        $View->save(['date'=>date("Y-m-d"),'total'=>1]);
-        $_SESSION['view']=1;
-    }
-}else{
-    // echo "yyy";
 }
+
+function dd($array){
+    echo "<pre>";
+    print_r($array);
+    echo "</pre>";
+}
+
+function to($url){
+    header("location:".$url);
+}
+
+$User=new DB('user');
+$View=new DB('view');
+$News=new DB('news');
+$Que=new DB('que');
+$Log=new DB('log');
+
+
+// 第一題total資料表只有一個列，只簡單做讀寫
+// if(!isset($_SESSION['total'])){
+//     $total=$Total->find(['date'=>date("Y-m-d")]);
+//     $total['total']++;
+//     $total->save($total);
+//     $_SESSION['total']=$total['total'];
+// }
+// 第二題要儲存每日的進站人數有多筆資料。要先看資料庫有沒有今天的資料，有則修改，沒有就直接存資料
+if(!isset($_SESSION['total'])){
+	if($View->math('count','*',['date'=>date("Y-m-d")])){
+		$view=$View->find(['date'=>date("Y-m-d")]);
+		$view['total']++;
+		$View->save($view);
+		$_SESSION['total']=$view['total'];
+	}else{
+		$View->save(['date'=>date("Y-m-d"),'total'=>1]);
+		$_SESSION['total']=1;
+	}
+	
+}
+
 
 ?>

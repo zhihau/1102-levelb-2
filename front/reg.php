@@ -1,6 +1,9 @@
+<!-- 密碼錯誤
+
+帳號重複-->
 <fieldset>
     <legend>會員註冊</legend>
-    <div style="color:red">*請設定您要註冊的帳號及密碼(最長12個字元)</div>
+    <div style="color:red">* 請設定您要註冊的帳號及密碼 (最長12個字元)</div>
     <table>
         <tr>
             <td>Step1:登入帳號</td>
@@ -20,8 +23,7 @@
         </tr>
         <tr>
             <td>
-                <button onclick="reg()">註冊</button>
-                <button onclick="reset()">清除</button>
+                <button onclick="reg()">註冊</button onclick="reset()"><button>清除</button>
             </td>
             <td></td>
         </tr>
@@ -29,42 +31,34 @@
 </fieldset>
 <script>
     function reset(){
-        $("#acc,#pw,#pw2,#email").val("");
+        $('#acc,#pw,#pw2,#email').val("");
     }
     function reg(){
-        let form={
-            acc:$("#acc").val(),
-            pw:$("#pw").val(),
-            pw2:$("#pw2").val(),
-            email:$("#email").val(),
-        };//物件   key直不加雙引號，key直不能數字開頭
-        // if(form.acc==''||form.pw==''||form.pw2==''||form.email==''){
-        if(Object.values(form).indexOf('')>=0){
-            alert("不可空白");
-        }else{
-            if(form.pw!=form.pw2){
-            alert("密碼錯誤");
-            }else{
-                $.post("api/chk_acc.php",{acc:form.acc},(chk)=>{
-                    if(parseInt(chk)==1){//有時可以有時不行
-                        alert("帳號重複");
-                    }else{
-                        delete form.pw2;
-                         console.log(form)
-                        $.post("api/reg.php",form,(res)=>{
-                            // console.log(res);//沒回覆信息相當於零
-                            // if(parseInt(res)==1){
-                                alert("註冊完成，歡迎加入")
-                                location.href="index.php?do=login"
-                            // }else{
-                            //     alert("註冊失敗")
-                            // }
-                        })
-                    }
-                })
-                
-            }
-            
-        }
+let user={
+    acc:$('#acc').val(),
+    pw:$('#pw').val(),
+    pw2:$('#pw2').val(),
+    email:$('#email').val(),
+}
+if(user.acc==''||user.pw==''||user.pw2==''||user.email==''){
+    alert('不可空白');
+}else{
+    if(user.pw!=user.pw2){
+        alert('密碼錯誤')
+    }else{
+        $.post('../api/chk_acc.php',user,(chk)=>{
+if(parseInt(chk)==1){
+alert("帳號重複");
+}else{
+    delete user.pw2;
+    $.post('../api/reg.php',user,()=>{
+alert("註冊成功，歡迎加入");
+location.href='index.php?do=login';
+    })
+}
+        })
     }
+}
+    }
+
 </script>

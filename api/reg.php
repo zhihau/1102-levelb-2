@@ -1,7 +1,4 @@
-<?php include_once "../base.php";
-// dd($_POST);
-// echo $User->save($_POST);
+<?php
+include_once "../base.php";
+
 $User->save($_POST);
-
-
-?>
